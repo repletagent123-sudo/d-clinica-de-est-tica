@@ -1,123 +1,338 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgendaCheia - Assinatura para Clínicas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AgendaCheia PRO - Micro SaaS para Clínicas</title>
+    <!-- Tailwind + Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Inter', sans-serif; }
-        body { background: #f9fafb; }
-        .nav-bar { background: white; padding: 1rem 2rem; display: flex; gap: 1rem; justify-content: center; border-bottom: 1px solid #e5e7eb; }
-        .nav-btn { background: none; border: none; padding: 0.5rem 1.2rem; font-weight: 600; border-radius: 2rem; cursor: pointer; }
-        .nav-btn.active { background: #10b981; color: white; }
-        .container { max-width: 1200px; margin: auto; padding: 2rem 1.5rem; }
-        .page { display: none; animation: fade 0.2s; }
-        .page.active-page { display: block; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: white; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #edf2f7; }
-        .btn { background: #10b981; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: 600; cursor: pointer; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; }
-        .preco { font-size: 1.8rem; font-weight: 800; color: #10b981; }
-        input, select { width: 100%; padding: 0.7rem; border-radius: 1rem; border: 1px solid #ccc; margin: 0.5rem 0 1rem; }
-        table { width: 100%; border-collapse: collapse; }
-        td, th { padding: 0.7rem; border-bottom: 1px solid #e5e7eb; text-align: left; }
-        @media (max-width: 640px) { .nav-bar { gap: 0.5rem; } .container { padding: 1rem; } }
+        body { font-family: 'Inter', sans-serif; background: #f3f4f6; }
+        /* Estilo botão flutuante */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: #25D366;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .whatsapp-float:hover { transform: scale(1.05); }
     </style>
 </head>
-<body>
-<div class="nav-bar">
-    <button class="nav-btn active" data-page="landing">🏥 Clínicas</button>
-    <button class="nav-btn" data-page="paciente">💆 Paciente</button>
-    <button class="nav-btn" data-page="dashboard">📊 Dashboard</button>
-</div>
-<div class="container">
-    <!-- PÁGINA CLÍNICAS -->
-    <div id="landing" class="page active-page">
-        <div class="card" style="text-align:center; background:#f0fdf4;">
-            <h1 style="font-size:2rem;">Acabe com a agenda vazia</h1>
-            <p style="margin:1rem 0">Planos de assinatura + agendamento automático. Aumente sua ocupação em até 88%.</p>
-            <button class="btn" id="ctaLead">▶ Quero diagnóstico grátis</button>
-        </div>
-        <div class="card" id="leadForm" style="display:none">
-            <h3>Preencha para contato comercial</h3>
-            <input type="text" id="nomeClinica" placeholder="Nome da clínica">
-            <input type="tel" id="whats" placeholder="WhatsApp">
-            <button class="btn" id="salvarLead">Enviar</button>
-            <p id="leadMsg" style="margin-top:0.8rem; color:#10b981;"></p>
-        </div>
-        <div class="card">✅ Como funciona: paciente assina, escolhe dia fixo, sistema agenda e lembra. Você só lucra.</div>
+<body class="antialiased">
+
+<!-- BOTÃO FLUTUANTE WHATSAPP (fixo) -->
+<a href="https://wa.me/5511953429077?text=Olá%2C%20quero%20saber%20mais%20sobre%20o%20AgendaCheia" target="_blank" class="whatsapp-float">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+        <path d="M12.032 2.018c-5.514 0-9.99 4.476-9.99 9.99 0 1.76.457 3.48 1.33 4.99l-1.41 4.99 5.12-1.4c1.46.8 3.1 1.22 4.79 1.22 5.51 0 9.99-4.48 9.99-9.99s-4.48-9.99-9.99-9.99zm.01 18.38c-1.5 0-2.96-.4-4.24-1.15l-.3-.18-3.04.83.82-2.96-.2-.31c-.85-1.33-1.3-2.87-1.3-4.45 0-4.62 3.76-8.38 8.38-8.38s8.38 3.76 8.38 8.38-3.76 8.38-8.38 8.38zm4.59-6.27c-.25-.12-1.48-.73-1.71-.81-.23-.08-.39-.12-.56.12-.17.24-.65.81-.8.98-.14.17-.29.19-.54.07-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.11-.51.12-.12.26-.31.39-.47.13-.16.17-.27.26-.45.09-.19.04-.35-.02-.49-.07-.14-.56-1.36-.77-1.86-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.57.12.17 1.75 2.67 4.24 3.74.59.26 1.06.41 1.42.53.6.19 1.14.16 1.57.1.48-.06 1.48-.6 1.69-1.19.21-.58.21-1.07.15-1.17-.06-.1-.23-.16-.48-.28z"/>
+    </svg>
+</a>
+
+<div class="max-w-7xl mx-auto px-4 py-6">
+    <!-- TÍTULO GERAL -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">AgendaCheia <span class="text-emerald-600">PRO</span></h1>
+        <p class="text-gray-500 mt-2">SaaS de agendamento automático para clínicas de estética</p>
     </div>
 
-    <!-- PÁGINA PACIENTE -->
-    <div id="paciente" class="page">
-        <div class="card"><h2>Clínica Estética Modelo</h2><p>Assine e tenha seu horário garantido todo mês</p></div>
-        <div class="grid-2">
-            <div class="card"><h3>Plano Bronze</h3><p>Limpeza + Massagem</p><div class="preco">R$ 149/mês</div>
-                <select id="diaBronze"><option>Primeira segunda</option><option>Primeira quarta</option></select>
-                <button class="btn" onclick="assinar('Bronze',149)">Assinar</button>
-            </div>
-            <div class="card"><h3>Plano Diamante</h3><p>Drenagem + Peeling + LED</p><div class="preco">R$ 299/mês</div>
-                <select id="diaDiamante"><option>Toda quinta</option><option>Toda sexta</option></select>
-                <button class="btn" onclick="assinar('Diamante',299)">Assinar</button>
-            </div>
-        </div>
-        <div id="msgAssinatura" class="card" style="display:none;"></div>
+    <!-- SISTEMA DE LOGIN SIMULADO (clinic_id via LocalStorage) -->
+    <div id="loginSection" class="bg-white rounded-2xl shadow-md p-6 max-w-md mx-auto">
+        <h2 class="text-xl font-semibold mb-4">Acesso da Clínica</h2>
+        <input type="text" id="loginNome" placeholder="Nome da clínica (ex: Espaço Bella)" class="w-full border rounded-xl p-3 mb-3">
+        <input type="password" id="loginSenha" placeholder="Senha (qualquer coisa para demo)" class="w-full border rounded-xl p-3 mb-4">
+        <button id="btnLogin" class="w-full bg-emerald-600 text-white font-semibold py-3 rounded-xl hover:bg-emerald-700 transition">Entrar / Criar conta</button>
+        <p class="text-xs text-gray-400 mt-3 text-center">Demo: digite qualquer nome e senha. Cada "clínica" tem dados isolados.</p>
     </div>
 
-    <!-- PÁGINA DASHBOARD CLÍNICA -->
-    <div id="dashboard" class="page">
-        <div class="card"><h2>Painel da Clínica</h2><button class="btn" id="resetar" style="background:#ef4444;">Resetar dados</button></div>
-        <div class="grid-2">
-            <div class="card"><h3>Assinantes ativos</h3><p id="totalAssinantes" style="font-size:2rem;">0</p></div>
-            <div class="card"><h3>Receita mensal</h3><p id="receita" style="font-size:2rem;">R$ 0</p></div>
+    <!-- DASHBOARD E AGENDAMENTO (só aparece após login) -->
+    <div id="appContent" class="hidden mt-6">
+        <!-- Navegação interna do app -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b pb-2">
+            <button class="tab-btn active-tab" data-tab="agenda">📅 Agendamento (paciente)</button>
+            <button class="tab-btn" data-tab="painel">📊 Painel do Dono</button>
         </div>
-        <div class="card"><h3>Lista de assinantes</h3><table><thead><tr><th>Paciente</th><th>Plano</th><th>Dia fixo</th></tr></thead><tbody id="listaAssinantes"></tbody></table></div>
+
+        <!-- ABA AGENDAMENTO (para o paciente) -->
+        <div id="tabAgenda" class="tab-content">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-800">Agendar horário</h2>
+                <p class="text-gray-500 mb-4">Escolha o serviço e uma data/hora válida (segunda a sábado, 8h às 18h).</p>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium">Serviço</label>
+                        <select id="servico" class="w-full border rounded-xl p-3">
+                            <option value="Limpeza de pele">Limpeza de pele - R$ 150</option>
+                            <option value="Massagem relaxante">Massagem relaxante - R$ 120</option>
+                            <option value="Drenagem linfática">Drenagem linfática - R$ 180</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium">Nome completo</label>
+                        <input type="text" id="pacienteNome" placeholder="Seu nome" class="w-full border rounded-xl p-3">
+                    </div>
+                    <div>
+                        <label class="block font-medium">Data</label>
+                        <input type="date" id="dataAgendamento" class="w-full border rounded-xl p-3">
+                    </div>
+                    <div>
+                        <label class="block font-medium">Horário</label>
+                        <select id="horarioAgendamento" class="w-full border rounded-xl p-3">
+                            <!-- preenchido por JS -->
+                        </select>
+                    </div>
+                </div>
+                <button id="btnAgendar" class="mt-6 bg-emerald-600 text-white font-semibold py-3 px-6 rounded-xl w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed" disabled>Verificar disponibilidade</button>
+                <div id="msgAgendamento" class="mt-4 text-sm"></div>
+            </div>
+        </div>
+
+        <!-- ABA PAINEL DO DONO -->
+        <div id="tabPainel" class="tab-content hidden">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex justify-between items-center flex-wrap gap-2 mb-4">
+                    <h2 class="text-2xl font-bold">Gestão de Horários</h2>
+                    <button id="btnBloquearHorario" class="bg-red-500 text-white px-4 py-2 rounded-xl text-sm">+ Bloquear horário</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead class="bg-gray-100">
+                            <tr><th class="p-3 text-left">Paciente</th><th>Serviço</th><th>Data/Hora</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="listaAgendamentosPainel"></tbody>
+                    </table>
+                </div>
+                <div id="msgPainel" class="mt-4 text-xs text-gray-500"></div>
+            </div>
+        </div>
     </div>
 </div>
+
 <script>
-    let assinaturas = JSON.parse(localStorage.getItem('assinaturas') || '[]');
-    let leads = JSON.parse(localStorage.getItem('leads') || '[]');
-    function salvar() { localStorage.setItem('assinaturas', JSON.stringify(assinaturas)); atualizarDashboard(); }
-    function atualizarDashboard() {
-        document.getElementById('totalAssinantes').innerText = assinaturas.length;
-        const total = assinaturas.reduce((s,a)=> s + a.valor,0);
-        document.getElementById('receita').innerText = `R$ ${total}`;
-        const tbody = document.getElementById('listaAssinantes');
-        tbody.innerHTML = '';
-        if(assinaturas.length===0) tbody.innerHTML = '<tr><td colspan="3">Nenhum assinante ainda</td></tr>';
-        else assinaturas.forEach(a => { let r = tbody.insertRow(); r.insertCell(0).innerText=a.paciente; r.insertCell(1).innerText=a.plano; r.insertCell(2).innerText=a.diaFixo; });
+    // SIMULAÇÃO DE BANCO DE DADOS COM CLINIC_ID (LocalStorage)
+    // Cada clínica guarda seus agendamentos + horários bloqueados
+    function getCurrentClinicId() {
+        return localStorage.getItem('currentClinicId');
     }
-    window.assinar = function(plano, valor) {
-        let diaSelect = (plano==='Bronze') ? 'diaBronze' : 'diaDiamante';
-        let diaFixo = document.getElementById(diaSelect).value;
-        let paciente = prompt("Seu nome completo:");
-        if(!paciente) return;
-        assinaturas.push({ paciente, plano, valor, diaFixo, data: new Date().toISOString() });
-        salvar();
-        let msgDiv = document.getElementById('msgAssinatura');
-        msgDiv.style.display = 'block';
-        msgDiv.innerHTML = `✅ Assinatura confirmada! Seu horário fixo (${diaFixo}) está reservado todo mês.`;
-        setTimeout(()=> msgDiv.style.display='none', 4000);
-        alert(`Assinatura criada! Vá em "Dashboard" para ver.`);
-    };
-    document.getElementById('ctaLead')?.addEventListener('click',()=> document.getElementById('leadForm').style.display='block');
-    document.getElementById('salvarLead')?.addEventListener('click',()=>{
-        let nome = document.getElementById('nomeClinica').value, whats = document.getElementById('whats').value;
-        if(nome && whats) { leads.push({nome,whats}); localStorage.setItem('leads',JSON.stringify(leads)); document.getElementById('leadMsg').innerText='Recebemos! Entraremos em contato.'; setTimeout(()=> document.getElementById('leadForm').style.display='none',2000); }
-        else alert('Preencha todos os campos');
+
+    function loadClinicData(clinicId) {
+        let data = localStorage.getItem(`clinic_${clinicId}`);
+        if(!data) {
+            // Dados iniciais vazios
+            let defaultData = { agendamentos: [], horariosBloqueados: [] };
+            localStorage.setItem(`clinic_${clinicId}`, JSON.stringify(defaultData));
+            return defaultData;
+        }
+        return JSON.parse(data);
+    }
+
+    function saveClinicData(clinicId, data) {
+        localStorage.setItem(`clinic_${clinicId}`, JSON.stringify(data));
+    }
+
+    // Verifica se um horário está disponível (não agendado e não bloqueado)
+    function isHorarioDisponivel(clinicId, dataHoraStr) {
+        let clinicData = loadClinicData(clinicId);
+        // verifica agendamentos
+        let ocupado = clinicData.agendamentos.some(a => a.dataHora === dataHoraStr);
+        if(ocupado) return false;
+        // verifica bloqueios
+        let bloqueado = clinicData.horariosBloqueados.some(b => b.dataHora === dataHoraStr);
+        return !bloqueado;
+    }
+
+    // Adicionar agendamento
+    function adicionarAgendamento(clinicId, paciente, servico, dataHora) {
+        let clinicData = loadClinicData(clinicId);
+        if(!isHorarioDisponivel(clinicId, dataHora)) return false;
+        clinicData.agendamentos.push({ paciente, servico, dataHora, criadoEm: new Date().toISOString() });
+        saveClinicData(clinicId, clinicData);
+        // SIMULAÇÃO DO WEBHOOK WHATSAPP (exibe no console e alerta)
+        let mensagem = `*Novo agendamento*\nPaciente: ${paciente}\nServiço: ${servico}\nData/Hora: ${dataHora}\nClínica ID: ${clinicId}`;
+        console.log("Webhook WhatsApp (simulação):", mensagem);
+        alert(`✅ Agendamento confirmado!\n(Simulação webhook) Mensagem seria enviada para 11953429077:\n${mensagem}`);
+        return true;
+    }
+
+    // Remover agendamento
+    function removerAgendamento(clinicId, index) {
+        let clinicData = loadClinicData(clinicId);
+        clinicData.agendamentos.splice(index, 1);
+        saveClinicData(clinicId, clinicData);
+    }
+
+    // Bloquear horário
+    function bloquearHorario(clinicId, dataHora, motivo = "Bloqueio manual") {
+        let clinicData = loadClinicData(clinicId);
+        if(isHorarioDisponivel(clinicId, dataHora)) {
+            clinicData.horariosBloqueados.push({ dataHora, motivo });
+            saveClinicData(clinicId, clinicData);
+            return true;
+        }
+        return false;
+    }
+
+    // Preencher horários disponíveis (8h às 18h, de hora em hora)
+    function gerarHorariosDisponiveis(dataSelecionada, clinicId) {
+        if(!dataSelecionada) return [];
+        let horarios = [];
+        let dataObj = new Date(dataSelecionada);
+        let diaSemana = dataObj.getDay(); // 0=domingo, 6=sábado
+        if(diaSemana === 0) return []; // domingo não permite
+        for(let h=8; h<=18; h++) {
+            let horaStr = `${h.toString().padStart(2,'0')}:00`;
+            let dataHora = `${dataSelecionada} ${horaStr}`;
+            let disponivel = isHorarioDisponivel(clinicId, dataHora);
+            horarios.push({ hora: horaStr, disponivel, dataHora });
+        }
+        return horarios;
+    }
+
+    // Atualiza dropdown de horários na aba agenda
+    function atualizarDropdownHorarios(dataSelecionada, clinicId) {
+        let selectHorario = document.getElementById('horarioAgendamento');
+        let horarios = gerarHorariosDisponiveis(dataSelecionada, clinicId);
+        if(!dataSelecionada || horarios.length === 0) {
+            selectHorario.innerHTML = '<option value="">Selecione uma data válida (seg-sex)</option>';
+            document.getElementById('btnAgendar').disabled = true;
+            return;
+        }
+        let options = '';
+        let temDisponivel = false;
+        horarios.forEach(h => {
+            if(h.disponivel) {
+                options += `<option value="${h.dataHora}">${h.hora}</option>`;
+                temDisponivel = true;
+            } else {
+                options += `<option value="${h.dataHora}" disabled>${h.hora} (indisponível)</option>`;
+            }
+        });
+        selectHorario.innerHTML = options;
+        document.getElementById('btnAgendar').disabled = !temDisponivel;
+    }
+
+    // Renderiza painel do dono
+    function renderPainelDono(clinicId) {
+        let clinicData = loadClinicData(clinicId);
+        let tbody = document.getElementById('listaAgendamentosPainel');
+        tbody.innerHTML = '';
+        clinicData.agendamentos.forEach((ag, idx) => {
+            let row = tbody.insertRow();
+            row.insertCell(0).innerHTML = ag.paciente;
+            row.insertCell(1).innerHTML = ag.servico;
+            row.insertCell(2).innerHTML = ag.dataHora;
+            let btnRemove = document.createElement('button');
+            btnRemove.textContent = 'Cancelar';
+            btnRemove.className = 'bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm';
+            btnRemove.onclick = () => {
+                if(confirm('Cancelar esse agendamento?')) {
+                    removerAgendamento(clinicId, idx);
+                    renderPainelDono(clinicId);
+                    // Se a aba agenda estiver visível, revalidar horários
+                    let dataAtual = document.getElementById('dataAgendamento').value;
+                    if(dataAtual) atualizarDropdownHorarios(dataAtual, clinicId);
+                }
+            };
+            let cell = row.insertCell(3);
+            cell.appendChild(btnRemove);
+        });
+        if(clinicData.agendamentos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-gray-400">Nenhum agendamento ainda</td></tr>';
+        }
+        // exibir bloqueios como aviso
+        let bloqueiosHtml = clinicData.horariosBloqueados.map(b => `${b.dataHora} (${b.motivo})`).join(', ');
+        document.getElementById('msgPainel').innerHTML = bloqueiosHtml ? `⚠️ Horários bloqueados: ${bloqueiosHtml}` : 'Nenhum horário bloqueado.';
+    }
+
+    // LOGIN E INICIALIZAÇÃO
+    let currentClinicId = null;
+
+    document.getElementById('btnLogin').addEventListener('click', () => {
+        let nomeClinica = document.getElementById('loginNome').value.trim();
+        let senha = document.getElementById('loginSenha').value;
+        if(!nomeClinica) {
+            alert('Digite um nome para a clínica');
+            return;
+        }
+        // Usamos o nome como clinic_id (slug simplificado)
+        let clinicId = nomeClinica.toLowerCase().replace(/\s/g, '_');
+        localStorage.setItem('currentClinicId', clinicId);
+        // Garante que exista dados
+        loadClinicData(clinicId);
+        currentClinicId = clinicId;
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('appContent').classList.remove('hidden');
+        // Renderiza painel
+        renderPainelDono(clinicId);
+        // Configura listeners de data
+        let dataInput = document.getElementById('dataAgendamento');
+        dataInput.addEventListener('change', () => {
+            let data = dataInput.value;
+            if(data) atualizarDropdownHorarios(data, clinicId);
+        });
+        // Botão agendar
+        document.getElementById('btnAgendar').addEventListener('click', () => {
+            let paciente = document.getElementById('pacienteNome').value.trim();
+            let servico = document.getElementById('servico').value;
+            let dataHora = document.getElementById('horarioAgendamento').value;
+            if(!paciente) { alert('Nome do paciente é obrigatório'); return; }
+            if(!dataHora) { alert('Selecione um horário disponível'); return; }
+            let sucesso = adicionarAgendamento(clinicId, paciente, servico, dataHora);
+            if(sucesso) {
+                document.getElementById('msgAgendamento').innerHTML = '<span class="text-emerald-600">✔ Agendamento realizado com sucesso!</span>';
+                // limpar campos
+                document.getElementById('pacienteNome').value = '';
+                document.getElementById('dataAgendamento').value = '';
+                document.getElementById('horarioAgendamento').innerHTML = '<option value="">Selecione uma data primeiro</option>';
+                document.getElementById('btnAgendar').disabled = true;
+                renderPainelDono(clinicId);
+            } else {
+                document.getElementById('msgAgendamento').innerHTML = '<span class="text-red-500">❌ Horário não disponível (já ocupado ou bloqueado)</span>';
+            }
+        });
+        // Botão bloquear horário (simplificado com prompt)
+        document.getElementById('btnBloquearHorario').addEventListener('click', () => {
+            let dataHora = prompt('Digite data e hora para bloquear (formato YYYY-MM-DD HH:MM, ex: 2025-06-15 14:00)');
+            if(dataHora) {
+                let sucesso = bloquearHorario(clinicId, dataHora);
+                if(sucesso) {
+                    renderPainelDono(clinicId);
+                    alert('Horário bloqueado com sucesso');
+                    // Se a data atual estiver selecionada, atualiza
+                    let dataAtual = document.getElementById('dataAgendamento').value;
+                    if(dataAtual) atualizarDropdownHorarios(dataAtual, clinicId);
+                } else {
+                    alert('Horário já está ocupado ou já bloqueado');
+                }
+            }
+        });
     });
-    document.getElementById('resetar')?.addEventListener('click',()=>{ if(confirm('Apagar todos os assinantes?')){ assinaturas=[]; salvar(); } });
-    // navegação
-    document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
-        let id = btn.dataset.page;
-        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
-        document.getElementById(id).classList.add('active-page');
-        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        if(id==='dashboard') atualizarDashboard();
-    }));
-    atualizarDashboard();
-    if(assinaturas.length===0) { assinaturas.push({paciente:"Ana (demo)",plano:"Bronze",valor:149,diaFixo:"Primeira segunda"}); salvar(); }
+
+    // Controle de abas
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            let tabId = btn.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            btn.classList.add('active-tab');
+            if(tabId === 'painel' && currentClinicId) renderPainelDono(currentClinicId);
+        });
+    });
+    // Estilo para aba ativa
+    const style = document.createElement('style');
+    style.textContent = `.tab-btn { background: none; border: none; padding: 0.5rem 1.2rem; border-radius: 2rem; font-weight: 500; cursor: pointer; } .active-tab { background: #10b981; color: white; }`;
+    document.head.appendChild(style);
 </script>
 </body>
 </html>
