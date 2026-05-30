@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgendaCheia - Assinatura para Clínicas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Inter', sans-serif; }
+        body { background: #f9fafb; }
+        .nav-bar { background: white; padding: 1rem 2rem; display: flex; gap: 1rem; justify-content: center; border-bottom: 1px solid #e5e7eb; }
+        .nav-btn { background: none; border: none; padding: 0.5rem 1.2rem; font-weight: 600; border-radius: 2rem; cursor: pointer; }
+        .nav-btn.active { background: #10b981; color: white; }
+        .container { max-width: 1200px; margin: auto; padding: 2rem 1.5rem; }
+        .page { display: none; animation: fade 0.2s; }
+        .page.active-page { display: block; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: white; border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #edf2f7; }
+        .btn { background: #10b981; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: 600; cursor: pointer; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; }
+        .preco { font-size: 1.8rem; font-weight: 800; color: #10b981; }
+        input, select { width: 100%; padding: 0.7rem; border-radius: 1rem; border: 1px solid #ccc; margin: 0.5rem 0 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 0.7rem; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        @media (max-width: 640px) { .nav-bar { gap: 0.5rem; } .container { padding: 1rem; } }
+    </style>
+</head>
+<body>
+<div class="nav-bar">
+    <button class="nav-btn active" data-page="landing">🏥 Clínicas</button>
+    <button class="nav-btn" data-page="paciente">💆 Paciente</button>
+    <button class="nav-btn" data-page="dashboard">📊 Dashboard</button>
+</div>
+<div class="container">
+    <!-- PÁGINA CLÍNICAS -->
+    <div id="landing" class="page active-page">
+        <div class="card" style="text-align:center; background:#f0fdf4;">
+            <h1 style="font-size:2rem;">Acabe com a agenda vazia</h1>
+            <p style="margin:1rem 0">Planos de assinatura + agendamento automático. Aumente sua ocupação em até 88%.</p>
+            <button class="btn" id="ctaLead">▶ Quero diagnóstico grátis</button>
+        </div>
+        <div class="card" id="leadForm" style="display:none">
+            <h3>Preencha para contato comercial</h3>
+            <input type="text" id="nomeClinica" placeholder="Nome da clínica">
+            <input type="tel" id="whats" placeholder="WhatsApp">
+            <button class="btn" id="salvarLead">Enviar</button>
+            <p id="leadMsg" style="margin-top:0.8rem; color:#10b981;"></p>
+        </div>
+        <div class="card">✅ Como funciona: paciente assina, escolhe dia fixo, sistema agenda e lembra. Você só lucra.</div>
+    </div>
+
+    <!-- PÁGINA PACIENTE -->
+    <div id="paciente" class="page">
+        <div class="card"><h2>Clínica Estética Modelo</h2><p>Assine e tenha seu horário garantido todo mês</p></div>
+        <div class="grid-2">
+            <div class="card"><h3>Plano Bronze</h3><p>Limpeza + Massagem</p><div class="preco">R$ 149/mês</div>
+                <select id="diaBronze"><option>Primeira segunda</option><option>Primeira quarta</option></select>
+                <button class="btn" onclick="assinar('Bronze',149)">Assinar</button>
+            </div>
+            <div class="card"><h3>Plano Diamante</h3><p>Drenagem + Peeling + LED</p><div class="preco">R$ 299/mês</div>
+                <select id="diaDiamante"><option>Toda quinta</option><option>Toda sexta</option></select>
+                <button class="btn" onclick="assinar('Diamante',299)">Assinar</button>
+            </div>
+        </div>
+        <div id="msgAssinatura" class="card" style="display:none;"></div>
+    </div>
+
+    <!-- PÁGINA DASHBOARD CLÍNICA -->
+    <div id="dashboard" class="page">
+        <div class="card"><h2>Painel da Clínica</h2><button class="btn" id="resetar" style="background:#ef4444;">Resetar dados</button></div>
+        <div class="grid-2">
+            <div class="card"><h3>Assinantes ativos</h3><p id="totalAssinantes" style="font-size:2rem;">0</p></div>
+            <div class="card"><h3>Receita mensal</h3><p id="receita" style="font-size:2rem;">R$ 0</p></div>
+        </div>
+        <div class="card"><h3>Lista de assinantes</h3><table><thead><tr><th>Paciente</th><th>Plano</th><th>Dia fixo</th></tr></thead><tbody id="listaAssinantes"></tbody></table></div>
+    </div>
+</div>
+<script>
+    let assinaturas = JSON.parse(localStorage.getItem('assinaturas') || '[]');
+    let leads = JSON.parse(localStorage.getItem('leads') || '[]');
+    function salvar() { localStorage.setItem('assinaturas', JSON.stringify(assinaturas)); atualizarDashboard(); }
+    function atualizarDashboard() {
+        document.getElementById('totalAssinantes').innerText = assinaturas.length;
+        const total = assinaturas.reduce((s,a)=> s + a.valor,0);
+        document.getElementById('receita').innerText = `R$ ${total}`;
+        const tbody = document.getElementById('listaAssinantes');
+        tbody.innerHTML = '';
+        if(assinaturas.length===0) tbody.innerHTML = '<tr><td colspan="3">Nenhum assinante ainda</td></tr>';
+        else assinaturas.forEach(a => { let r = tbody.insertRow(); r.insertCell(0).innerText=a.paciente; r.insertCell(1).innerText=a.plano; r.insertCell(2).innerText=a.diaFixo; });
+    }
+    window.assinar = function(plano, valor) {
+        let diaSelect = (plano==='Bronze') ? 'diaBronze' : 'diaDiamante';
+        let diaFixo = document.getElementById(diaSelect).value;
+        let paciente = prompt("Seu nome completo:");
+        if(!paciente) return;
+        assinaturas.push({ paciente, plano, valor, diaFixo, data: new Date().toISOString() });
+        salvar();
+        let msgDiv = document.getElementById('msgAssinatura');
+        msgDiv.style.display = 'block';
+        msgDiv.innerHTML = `✅ Assinatura confirmada! Seu horário fixo (${diaFixo}) está reservado todo mês.`;
+        setTimeout(()=> msgDiv.style.display='none', 4000);
+        alert(`Assinatura criada! Vá em "Dashboard" para ver.`);
+    };
+    document.getElementById('ctaLead')?.addEventListener('click',()=> document.getElementById('leadForm').style.display='block');
+    document.getElementById('salvarLead')?.addEventListener('click',()=>{
+        let nome = document.getElementById('nomeClinica').value, whats = document.getElementById('whats').value;
+        if(nome && whats) { leads.push({nome,whats}); localStorage.setItem('leads',JSON.stringify(leads)); document.getElementById('leadMsg').innerText='Recebemos! Entraremos em contato.'; setTimeout(()=> document.getElementById('leadForm').style.display='none',2000); }
+        else alert('Preencha todos os campos');
+    });
+    document.getElementById('resetar')?.addEventListener('click',()=>{ if(confirm('Apagar todos os assinantes?')){ assinaturas=[]; salvar(); } });
+    // navegação
+    document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
+        let id = btn.dataset.page;
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+        document.getElementById(id).classList.add('active-page');
+        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        if(id==='dashboard') atualizarDashboard();
+    }));
+    atualizarDashboard();
+    if(assinaturas.length===0) { assinaturas.push({paciente:"Ana (demo)",plano:"Bronze",valor:149,diaFixo:"Primeira segunda"}); salvar(); }
+</script>
+</body>
+</html>
