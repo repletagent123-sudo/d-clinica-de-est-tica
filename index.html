@@ -1,553 +1,220 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EstéticaPro - Agendamento Inteligente</title>
-    <!-- Tailwind + Font Awesome (opcional) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentalFlow - Automatização e Captação para Consultórios</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Ajustes personalizados */
-        body { background: #f8fafc; }
-        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1); }
-        /* Botão flutuante fixo */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1000;
-            background-color: #25D366;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            transition: all 0.2s;
-        }
-        .whatsapp-float:hover { transform: scale(1.08); }
-        /* Ocultar/mostrar telas */
-        .screen { display: none; }
-        .screen.active { display: block; }
-        /* Estilo do painel admin */
-        .admin-table { width: 100%; border-collapse: collapse; }
-        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="bg-zinc-950 text-zinc-50 antialiased selection:bg-cyan-500 selection:text-black overflow-x-hidden">
 
-<!-- BOTÃO FLUTUANTE WHATSAPP (link direto) -->
-<a href="https://wa.me/5511953429077?text=Olá%2C%20gostaria%20de%20mais%20informações" target="_blank" class="whatsapp-float">
-    <i class="fab fa-whatsapp text-white text-3xl"></i>
-</a>
-
-<!-- TELA PÚBLICA (PACIENTE) -->
-<div id="publicScreen" class="screen active">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Estética<span class="text-emerald-600">Pro</span></h1>
-            <p class="text-gray-500 mt-2">Agende seu horário em segundos • Horários confirmados via WhatsApp</p>
-        </div>
-
-        <!-- Catálogo de serviços (vindo do admin) -->
-        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Nossos tratamentos</h2>
-        <div id="servicosCatalogo" class="grid md:grid-cols-3 gap-6 mb-12">
-            <!-- Preenchido via JS -->
-        </div>
-
-        <!-- Formulário de agendamento -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 max-w-3xl mx-auto">
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">📅 Agende agora</h3>
-            <p class="text-gray-500 mb-6">Preencha os dados abaixo e confirme. Você receberá um aviso automático.</p>
-            
-            <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-medium text-gray-700">Serviço *</label>
-                    <select id="servicoSelect" class="w-full border border-gray-300 rounded-xl p-3 mt-1 focus:ring-emerald-500 focus:border-emerald-500">
-                        <option value="">Selecione um serviço</option>
-                    </select>
+    <!-- Header / Navbar -->
+    <header class="w-full border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md fixed top-0 left-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-black shadow-lg shadow-cyan-500/20">
+                    D
                 </div>
-                <div>
-                    <label class="block font-medium text-gray-700">Nome completo *</label>
-                    <input type="text" id="pacienteNome" class="w-full border border-gray-300 rounded-xl p-3 mt-1" placeholder="Ex: Ana Beatriz">
-                </div>
-                <div>
-                    <label class="block font-medium text-gray-700">Telefone (WhatsApp) *</label>
-                    <input type="tel" id="pacienteTelefone" class="w-full border border-gray-300 rounded-xl p-3 mt-1" placeholder="(11) 99999-9999">
-                </div>
-                <div>
-                    <label class="block font-medium text-gray-700">Data *</label>
-                    <input type="date" id="dataAgendamento" class="w-full border border-gray-300 rounded-xl p-3 mt-1">
-                </div>
-                <div>
-                    <label class="block font-medium text-gray-700">Horário *</label>
-                    <select id="horarioSelect" class="w-full border border-gray-300 rounded-xl p-3 mt-1" disabled>
-                        <option value="">Primeiro selecione uma data</option>
-                    </select>
-                </div>
+                <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">DentalFlow</span>
             </div>
-            <button id="btnConfirmarAgendamento" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">
-                Confirmar agendamento
-            </button>
-            <div id="msgPublic" class="mt-4 text-center text-sm"></div>
-        </div>
-
-        <div class="text-center text-gray-400 text-xs mt-8">
-            <button id="showAdminLink" class="text-emerald-500 underline">Área do dono da clínica</button>
-        </div>
-    </div>
-</div>
-
-<!-- TELA DE LOGIN ADMIN -->
-<div id="adminLoginScreen" class="screen">
-    <div class="min-h-screen flex items-center justify-center px-4">
-        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
-            <h2 class="text-2xl font-bold text-center mb-6">Acesso do Gestor</h2>
-            <input type="text" id="adminLoginUser" placeholder="Usuário (ex: clinica)" class="w-full border rounded-xl p-3 mb-3">
-            <input type="password" id="adminLoginPass" placeholder="Senha" class="w-full border rounded-xl p-3 mb-4">
-            <button id="doAdminLogin" class="w-full bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-900">Entrar</button>
-            <p class="text-xs text-gray-400 mt-4 text-center">Demo: usuário "admin" e senha "123" (cria uma clínica exemplo)</p>
-            <button id="backToPublicFromLogin" class="w-full text-emerald-600 underline mt-3">← Voltar para agendamento</button>
-        </div>
-    </div>
-</div>
-
-<!-- TELA PAINEL ADMIN (DONO DA CLÍNICA) -->
-<div id="adminPanelScreen" class="screen">
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="flex justify-between items-center flex-wrap gap-3 mb-6">
-            <h1 class="text-2xl font-bold">Painel de controle</h1>
-            <div class="flex gap-2">
-                <button id="logoutAdmin" class="bg-red-500 text-white px-4 py-2 rounded-xl text-sm">Sair</button>
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
+                <a href="#recursos" class="hover:text-zinc-100 transition-colors">Como Funciona</a>
+                <a href="#precos" class="hover:text-zinc-100 transition-colors">Preços</a>
+            </nav>
+            <div>
+                <a href="#precos" class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-zinc-950 bg-cyan-400 hover:bg-cyan-300 rounded-xl transition-all shadow-md shadow-cyan-500/10">
+                    Ativar Sistema
+                </a>
             </div>
         </div>
+    </header>
 
-        <!-- Abas internas -->
-        <div class="flex gap-2 border-b mb-6">
-            <button class="tab-admin-btn active-tab" data-tab="servicos">📋 Serviços</button>
-            <button class="tab-admin-btn" data-tab="agendamentos">📅 Agendamentos</button>
+    <!-- Hero Section (Alta Retenção) -->
+    <section class="pt-40 pb-24 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-b from-cyan-500/10 to-transparent blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800/80 mb-8">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="text-xs font-medium text-zinc-400 tracking-wide uppercase">Tecnologia de Automação Comercial</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1] text-white mb-8">
+                Zere as cadeiras vazias com o sistema de agendamento <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-400">inteligente</span>
+            </h1>
+
+            <p class="text-lg sm:text-xl text-zinc-400 font-light max-w-2xl mx-auto mb-10 leading-relaxed">
+                Uma página premium para seu consultório integrada com confirmações automáticas e gestão completa. Reduza as faltas de pacientes sem gastar o tempo da sua secretária.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#precos" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-zinc-950 bg-white hover:bg-zinc-200 rounded-2xl transition-all shadow-lg hover:scale-[1.01] active:scale-[0.99]">
+                    Escolher Meu Plano
+                </a>
+                <a href="#recursos" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-zinc-400 hover:text-zinc-200 bg-zinc-900/40 hover:bg-zinc-900 border border-zinc-800 rounded-2xl transition-all backdrop-blur-sm">
+                    Ver Recursos Otimizados
+                </a>
+            </div>
         </div>
+    </section>
 
-        <!-- Aba Serviços -->
-        <div id="adminServicosTab" class="admin-tab active-tab-content">
-            <div class="bg-white rounded-xl shadow p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">Gerenciar serviços (catálogo público)</h2>
-                    <button id="btnNovoServico" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm">+ Novo serviço</button>
+    <!-- Recursos / O que o sistema faz -->
+    <section id="recursos" class="py-24 border-t border-zinc-900 bg-zinc-900/20 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Tudo no automático para você focar nos pacientes</h2>
+                <p class="mt-4 text-zinc-400">Substitua planilhas antigas e processos manuais por um ecossistema digital integrado.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-8 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-cyan-500/30 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-6 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Agenda Online 24h</h3>
+                    <p class="text-zinc-400 font-light leading-relaxed">Seu paciente escolhe o horário e agenda a consulta direto pelo site, mesmo fora do horário comercial.</p>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="admin-table">
-                        <thead class="bg-gray-50">
-                            <tr><th>Nome</th><th>Preço (R$)</th><th>Ações</th></tr>
-                        </thead>
-                        <tbody id="listaServicosAdmin"></tbody>
-                    </table>
+                <!-- Card 2 -->
+                <div class="p-8 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-cyan-500/30 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-6 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Lembretes via WhatsApp</h3>
+                    <p class="text-zinc-400 font-light leading-relaxed">O sistema envia notificações automáticas de confirmação, reduzindo drasticamente as faltas não avisadas.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-8 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-cyan-500/30 transition-all group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-6 group-hover:bg-cyan-500 group-hover:text-black transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 00-2 2h2a2 2 0 00-2-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Gestão de Fluxo Completa</h3>
+                    <p class="text-zinc-400 font-light leading-relaxed">Controle financeiro, histórico de retornos, relatórios de estoque e faturamento unificados em um só lugar.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Aba Agendamentos -->
-        <div id="adminAgendamentosTab" class="admin-tab hidden">
-            <div class="bg-white rounded-xl shadow p-6">
-                <h2 class="text-xl font-semibold mb-4">Todos os agendamentos dos pacientes</h2>
-                <div class="overflow-x-auto">
-                    <table class="admin-table">
-                        <thead class="bg-gray-50">
-                            <tr><th>Paciente</th><th>Telefone</th><th>Serviço</th><th>Data/Hora</th><th>Status</th></tr>
-                        </thead>
-                        <tbody id="listaAgendamentosAdmin"></tbody>
-                    </table>
+    <!-- Tabela de Preços Estratégica -->
+    <section id="precos" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Planos sob medida para o seu tamanho</h2>
+                <p class="mt-4 text-zinc-400">Sem contratos complexos. Cancele ou mude de plano quando quiser.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                
+                <!-- Plano Essencial -->
+                <div class="p-8 rounded-3xl bg-zinc-900/40 border border-zinc-800/80 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-semibold text-zinc-300 mb-2">Essencial</h4>
+                        <p class="text-xs text-zinc-500 mb-6">Ideal para consultórios individuais e iniciantes.</p>
+                        <div class="flex items-baseline gap-1 text-white mb-6">
+                            <span class="text-2xl font-bold">R$</span>
+                            <span class="text-5xl font-extrabold tracking-tight">80</span>
+                            <span class="text-zinc-500 text-sm">/mês</span>
+                        </div>
+                        <ul class="space-y-4 text-sm text-zinc-400 border-t border-zinc-800/60 pt-6">
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Landing Page Profissional Premium
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Agenda Digital Online Basica
+                            </li>
+                            <li class="flex items-center gap-3 text-zinc-600 line-through">
+                                Confirmações via WhatsApp
+                            </li>
+                            <li class="flex items-center gap-3 text-zinc-600 line-through">
+                                Painel de Controle Financeiro
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="#" class="mt-8 w-full py-3 px-4 text-center text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-all">Começar Agora</a>
                 </div>
+
+                <!-- Plano Profissional (Destaque) -->
+                <div class="p-8 rounded-3xl bg-zinc-900 border-2 border-cyan-500 flex flex-col justify-between relative shadow-xl shadow-cyan-500/5">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cyan-500 text-black text-xs font-bold uppercase tracking-wider">Mais Vendido</div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-cyan-400 mb-2">Profissional</h4>
+                        <p class="text-xs text-zinc-400 mb-6">O melhor custo-benefício para automação real.</p>
+                        <div class="flex items-baseline gap-1 text-white mb-6">
+                            <span class="text-2xl font-bold">R$</span>
+                            <span class="text-5xl font-extrabold tracking-tight">110</span>
+                            <span class="text-zinc-500 text-sm">/mês</span>
+                        </div>
+                        <ul class="space-y-4 text-sm text-zinc-300 border-t border-zinc-800/80 pt-6">
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Tudo do Plano Essencial
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Disparos e Confirmações via WhatsApp
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Painel Financeiro Automático
+                            </li>
+                            <li class="flex items-center gap-3 text-zinc-600 line-through">
+                                Controle de Estoque e Suprimentos
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="#" class="mt-8 w-full py-3 px-4 text-center text-sm font-semibold text-black bg-cyan-400 hover:bg-cyan-300 rounded-xl transition-all shadow-md shadow-cyan-500/20">Ativar Plano Pro</a>
+                </div>
+
+                <!-- Plano Premium -->
+                <div class="p-8 rounded-3xl bg-zinc-900/40 border border-zinc-800/80 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-semibold text-zinc-300 mb-2">Premium</h4>
+                        <p class="text-xs text-zinc-500 mb-6">Controle total para clínicas com alto fluxo.</p>
+                        <div class="flex items-baseline gap-1 text-white mb-6">
+                            <span class="text-2xl font-bold">R$</span>
+                            <span class="text-5xl font-extrabold tracking-tight">150</span>
+                            <span class="text-zinc-500 text-sm">/mês</span>
+                        </div>
+                        <ul class="space-y-4 text-sm text-zinc-400 border-t border-zinc-800/60 pt-6">
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Tudo do Plano Profissional
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Controle Completo de Estoque
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Relatórios de Produtividade Avançados
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="h-5 w-5 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Suporte Prioritário 24/7
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="#" class="mt-8 w-full py-3 px-4 text-center text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-all">Quero o Completo</a>
+                </div>
+
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<script>
-    // --------------------------------------------------------------
-    // CONFIGURAÇÃO: URL DO WEBHOOK REAL (SUBSTITUA PELA SUA)
-    // Exemplo usando CallMeBot (https://www.callmebot.com/blog/free-whatsapp-api/)
-    // Você precisa configurar um token. Caso não tenha, deixamos como simulação.
-    const WEBHOOK_URL = "https://api.callmebot.com/whatsapp.php?phone=5511953429077&text="; 
-    // Para testar sem webhook real, descomente a linha abaixo e comente a de cima:
-    // const WEBHOOK_URL = null; // Simulação apenas no console
-    // --------------------------------------------------------------
+    <!-- Footer -->
+    <footer class="py-8 border-t border-zinc-900 text-center text-xs text-zinc-600 relative z-10">
+        <p>&copy; 2026 DentalFlow. Todos os direitos reservados. Soluções de Automação Comercial.</p>
+    </footer>
 
-    // --- MODELO DE DADOS (LocalStorage com clinic_id) ---
-    let currentClinicId = null; // será definido no login
-
-    // Inicializa dados padrão para uma clínica
-    function initClinicData(clinicId) {
-        let data = localStorage.getItem(`clinic_${clinicId}`);
-        if(!data) {
-            let defaultData = {
-                servicos: [
-                    { id: "s1", nome: "Limpeza de Pele", preco: 150 },
-                    { id: "s2", nome: "Botox (uma área)", preco: 350 },
-                    { id: "s3", nome: "Depilação a laser (pequena área)", preco: 120 },
-                    { id: "s4", nome: "Drenagem Linfática", preco: 180 }
-                ],
-                agendamentos: [] // cada agendamento: { id, paciente, telefone, servicoId, servicoNome, preco, dataHora }
-            };
-            localStorage.setItem(`clinic_${clinicId}`, JSON.stringify(defaultData));
-            return defaultData;
-        }
-        return JSON.parse(data);
-    }
-
-    function saveClinicData(clinicId, data) {
-        localStorage.setItem(`clinic_${clinicId}`, JSON.stringify(data));
-    }
-
-    function getClinicData() {
-        if(!currentClinicId) return null;
-        return JSON.parse(localStorage.getItem(`clinic_${currentClinicId}`) || '{}');
-    }
-
-    function saveClinicDataCurrent(data) {
-        if(currentClinicId) localStorage.setItem(`clinic_${currentClinicId}`, JSON.stringify(data));
-    }
-
-    // --- VALIDAÇÃO DE HORÁRIOS ---
-    function isHorarioComercial(dataStr, horaStr) {
-        const data = new Date(dataStr);
-        const dia = data.getDay(); // 0=domingo,6=sabado
-        if(dia === 0) return false; // domingo
-        const hora = parseInt(horaStr.split(':')[0]);
-        return (hora >= 8 && hora <= 18);
-    }
-
-    function gerarHorariosDisponiveis(dataStr, clinicId) {
-        if(!dataStr) return [];
-        const dataObj = new Date(dataStr);
-        if(dataObj.getDay() === 0) return []; // domingo
-        const clinicData = JSON.parse(localStorage.getItem(`clinic_${clinicId}`) || '{"agendamentos":[]}');
-        const ocupados = clinicData.agendamentos.map(a => a.dataHora);
-        let horarios = [];
-        for(let h=8; h<=18; h++) {
-            let horaFormat = `${h.toString().padStart(2,'0')}:00`;
-            let dataHora = `${dataStr} ${horaFormat}`;
-            let disponivel = !ocupados.includes(dataHora);
-            horarios.push({ display: horaFormat, value: dataHora, disponivel });
-        }
-        return horarios;
-    }
-
-    // --- ATUALIZAR SELECT DE HORÁRIOS NA TELA PÚBLICA ---
-    function atualizarSelectHorarios(dataStr) {
-        let select = document.getElementById('horarioSelect');
-        if(!dataStr) {
-            select.innerHTML = '<option value="">Selecione uma data primeiro</option>';
-            select.disabled = true;
-            return;
-        }
-        let horarios = gerarHorariosDisponiveis(dataStr, currentClinicId);
-        if(horarios.length === 0) {
-            select.innerHTML = '<option value="">Nenhum horário disponível (domingo ou fora do comercial)</option>';
-            select.disabled = true;
-            return;
-        }
-        let options = '';
-        let temDisponivel = false;
-        horarios.forEach(h => {
-            if(h.disponivel) {
-                options += `<option value="${h.value}">${h.display}</option>`;
-                temDisponivel = true;
-            } else {
-                options += `<option value="${h.value}" disabled>${h.display} (indisponível)</option>`;
-            }
-        });
-        select.innerHTML = options;
-        select.disabled = !temDisponivel;
-    }
-
-    // --- ENVIO DE WEBHOOK PARA WHATSAPP ---
-    async function enviarWebhookWhatsapp(paciente, telefone, servicoNome, preco, dataHora) {
-        let mensagem = `*Novo agendamento*\nPaciente: ${paciente}\nTelefone: ${telefone}\nServiço: ${servicoNome} - R$ ${preco}\nData/Hora: ${dataHora}`;
-        mensagem = encodeURIComponent(mensagem);
-        const url = WEBHOOK_URL ? WEBHOOK_URL + mensagem : null;
-        if(url) {
-            try {
-                // Nota: CallMeBot exige um apikey específica. Na prática, você usará um serviço real.
-                // Aqui apenas simulamos o fetch, mas o ideal é trocar por sua API.
-                console.log("Enviando webhook para:", url);
-                // Para evitar erro de CORS em ambiente local, faremos uma simulação.
-                // Em produção, use seu backend ou um proxy.
-                alert(`[SIMULAÇÃO] Webhook enviado para ${telefone} com a mensagem:\n${decodeURIComponent(mensagem)}`);
-                // Se quiser realmente chamar a URL (pode dar erro de CORS), descomente:
-                // await fetch(url, { mode: 'no-cors' });
-            } catch(e) { console.error(e); }
-        } else {
-            console.log("Webhook não configurado. Mensagem:", decodeURIComponent(mensagem));
-            alert(`[DEMO] Sem webhook real. A mensagem abaixo seria enviada ao WhatsApp:\n${decodeURIComponent(mensagem)}`);
-        }
-    }
-
-    // --- CRIAÇÃO DE AGENDAMENTO (PACIENTE) ---
-    async function criarAgendamento(paciente, telefone, servicoId, servicoNome, preco, dataHora) {
-        if(!currentClinicId) {
-            alert("Sistema não inicializado. Recarregue a página.");
-            return false;
-        }
-        // Verificar novamente se o horário está livre (race condition)
-        let clinicData = getClinicData();
-        let jaExiste = clinicData.agendamentos.some(a => a.dataHora === dataHora);
-        if(jaExiste) {
-            alert("Horário acabou de ser ocupado. Escolha outro.");
-            return false;
-        }
-        let novoId = Date.now().toString();
-        let novoAgendamento = {
-            id: novoId,
-            paciente: paciente,
-            telefone: telefone,
-            servicoId: servicoId,
-            servicoNome: servicoNome,
-            preco: preco,
-            dataHora: dataHora,
-            criadoEm: new Date().toISOString()
-        };
-        clinicData.agendamentos.push(novoAgendamento);
-        saveClinicDataCurrent(clinicData);
-        // Disparar webhook
-        await enviarWebhookWhatsapp(paciente, telefone, servicoNome, preco, dataHora);
-        return true;
-    }
-
-    // --- RENDERIZAÇÃO DO CATÁLOGO PÚBLICO ---
-    function renderCatalogo() {
-        if(!currentClinicId) return;
-        let clinicData = getClinicData();
-        let container = document.getElementById('servicosCatalogo');
-        let selectServico = document.getElementById('servicoSelect');
-        if(!container) return;
-        container.innerHTML = '';
-        selectServico.innerHTML = '<option value="">Selecione um serviço</option>';
-        clinicData.servicos.forEach(serv => {
-            // Card
-            let card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-md p-5 card-hover border border-gray-100';
-            card.innerHTML = `
-                <h3 class="text-xl font-bold text-gray-800">${serv.nome}</h3>
-                <p class="text-emerald-600 text-2xl font-bold mt-2">R$ ${serv.preco}</p>
-                <button class="mt-4 w-full bg-gray-100 hover:bg-emerald-600 hover:text-white transition py-2 rounded-lg select-servico-btn" data-id="${serv.id}" data-nome="${serv.nome}" data-preco="${serv.preco}">Agendar</button>
-            `;
-            container.appendChild(card);
-            // Option para select
-            let option = document.createElement('option');
-            option.value = JSON.stringify({id: serv.id, nome: serv.nome, preco: serv.preco});
-            option.textContent = `${serv.nome} - R$ ${serv.preco}`;
-            selectServico.appendChild(option);
-        });
-        // Eventos nos botões dos cards
-        document.querySelectorAll('.select-servico-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                let id = btn.dataset.id;
-                let nome = btn.dataset.nome;
-                let preco = btn.dataset.preco;
-                let select = document.getElementById('servicoSelect');
-                for(let i=0; i<select.options.length; i++) {
-                    let opt = select.options[i];
-                    if(opt.value && JSON.parse(opt.value).id === id) {
-                        select.selectedIndex = i;
-                        break;
-                    }
-                }
-                document.getElementById('pacienteNome').focus();
-            });
-        });
-    }
-
-    // --- RENDER PAINEL ADMIN (SERVIÇOS) ---
-    function renderAdminServicos() {
-        let clinicData = getClinicData();
-        let tbody = document.getElementById('listaServicosAdmin');
-        if(!tbody) return;
-        tbody.innerHTML = '';
-        clinicData.servicos.forEach((serv, idx) => {
-            let row = tbody.insertRow();
-            row.insertCell(0).innerHTML = serv.nome;
-            row.insertCell(1).innerHTML = `R$ ${serv.preco}`;
-            let cellAcoes = row.insertCell(2);
-            let btnEdit = document.createElement('button');
-            btnEdit.textContent = 'Editar';
-            btnEdit.className = 'bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm mr-2';
-            btnEdit.onclick = () => editarServico(serv.id);
-            let btnDelete = document.createElement('button');
-            btnDelete.textContent = 'Excluir';
-            btnDelete.className = 'bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm';
-            btnDelete.onclick = () => excluirServico(serv.id);
-            cellAcoes.appendChild(btnEdit);
-            cellAcoes.appendChild(btnDelete);
-        });
-    }
-
-    function editarServico(id) {
-        let clinicData = getClinicData();
-        let serv = clinicData.servicos.find(s => s.id === id);
-        if(!serv) return;
-        let novoNome = prompt("Novo nome do serviço:", serv.nome);
-        if(novoNome && novoNome.trim()) serv.nome = novoNome.trim();
-        let novoPreco = prompt("Novo preço (R$):", serv.preco);
-        if(novoPreco && !isNaN(parseFloat(novoPreco))) serv.preco = parseFloat(novoPreco);
-        saveClinicDataCurrent(clinicData);
-        renderAdminServicos();
-        renderCatalogo(); // atualiza público
-    }
-
-    function excluirServico(id) {
-        if(confirm("Remover serviço? Os agendamentos existentes continuarão visíveis.")) {
-            let clinicData = getClinicData();
-            clinicData.servicos = clinicData.servicos.filter(s => s.id !== id);
-            saveClinicDataCurrent(clinicData);
-            renderAdminServicos();
-            renderCatalogo();
-        }
-    }
-
-    document.getElementById('btnNovoServico')?.addEventListener('click', () => {
-        let nome = prompt("Nome do novo serviço:");
-        if(!nome) return;
-        let preco = parseFloat(prompt("Preço (R$):", "100"));
-        if(isNaN(preco)) preco = 100;
-        let clinicData = getClinicData();
-        let newId = 's'+Date.now();
-        clinicData.servicos.push({ id: newId, nome: nome, preco: preco });
-        saveClinicDataCurrent(clinicData);
-        renderAdminServicos();
-        renderCatalogo();
-    });
-
-    function renderAdminAgendamentos() {
-        let clinicData = getClinicData();
-        let tbody = document.getElementById('listaAgendamentosAdmin');
-        if(!tbody) return;
-        tbody.innerHTML = '';
-        clinicData.agendamentos.forEach(ag => {
-            let row = tbody.insertRow();
-            row.insertCell(0).innerHTML = ag.paciente;
-            row.insertCell(1).innerHTML = ag.telefone;
-            row.insertCell(2).innerHTML = `${ag.servicoNome} (R$ ${ag.preco})`;
-            row.insertCell(3).innerHTML = ag.dataHora;
-            row.insertCell(4).innerHTML = '<span class="text-emerald-600">Confirmado</span>';
-        });
-        if(clinicData.agendamentos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-400">Nenhum agendamento ainda</td></tr>';
-        }
-    }
-
-    // --- ADMIN LOGIN ---
-    function doLogin(username, password) {
-        // Demo: aceita qualquer usuário/senha, mas cria clinic_id baseado no username
-        // Para fins de demonstração, armazenamos clinic_id = username + "_clinic"
-        let clinicId = username.trim().toLowerCase().replace(/\s/g, '_') + '_clinic';
-        currentClinicId = clinicId;
-        initClinicData(currentClinicId);
-        // Salva sessão no sessionStorage
-        sessionStorage.setItem('loggedClinicId', currentClinicId);
-        sessionStorage.setItem('loggedUser', username);
-        // Alterna telas
-        document.getElementById('adminLoginScreen').classList.remove('active');
-        document.getElementById('adminPanelScreen').classList.add('active');
-        // Renderiza painel
-        renderAdminServicos();
-        renderAdminAgendamentos();
-        // Inicializar tabs admin
-        document.querySelectorAll('.tab-admin-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                let tab = btn.dataset.tab;
-                document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
-                document.getElementById(`admin${tab.charAt(0).toUpperCase() + tab.slice(1)}Tab`).classList.remove('hidden');
-                document.querySelectorAll('.tab-admin-btn').forEach(b => b.classList.remove('active-tab'));
-                btn.classList.add('active-tab');
-                if(tab === 'agendamentos') renderAdminAgendamentos();
-            });
-        });
-    }
-
-    // --- SAIR ---
-    function logout() {
-        sessionStorage.removeItem('loggedClinicId');
-        sessionStorage.removeItem('loggedUser');
-        currentClinicId = null;
-        document.getElementById('adminPanelScreen').classList.remove('active');
-        document.getElementById('publicScreen').classList.add('active');
-        // Recarregar dados públicos (já sem clinic_id? Precisa recarregar a página ou redefinir)
-        location.reload(); // forma simples
-    }
-
-    // --- Inicialização da tela pública (sem login, mas precisa de um clinic_id padrão) ---
-    function initPublic() {
-        // Se não houver clínica logada, usamos uma clínica padrão "public_clinic"
-        let storedClinic = sessionStorage.getItem('loggedClinicId');
-        if(storedClinic) {
-            currentClinicId = storedClinic;
-        } else {
-            currentClinicId = "demo_clinic";
-            initClinicData(currentClinicId);
-        }
-        renderCatalogo();
-        // Eventos de data/hora
-        let dataInput = document.getElementById('dataAgendamento');
-        dataInput.addEventListener('change', (e) => {
-            atualizarSelectHorarios(e.target.value);
-        });
-        document.getElementById('btnConfirmarAgendamento').addEventListener('click', async () => {
-            let servicoVal = document.getElementById('servicoSelect').value;
-            if(!servicoVal) { alert("Selecione um serviço"); return; }
-            let servicoObj = JSON.parse(servicoVal);
-            let paciente = document.getElementById('pacienteNome').value.trim();
-            let telefone = document.getElementById('pacienteTelefone').value.trim();
-            let dataHora = document.getElementById('horarioSelect').value;
-            if(!paciente || !telefone || !dataHora) {
-                alert("Preencha todos os campos");
-                return;
-            }
-            // Valida horário comercial (já feito pelo select)
-            let ok = await criarAgendamento(paciente, telefone, servicoObj.id, servicoObj.nome, servicoObj.preco, dataHora);
-            if(ok) {
-                document.getElementById('msgPublic').innerHTML = '<span class="text-emerald-600">✔ Agendamento confirmado! Você receberá uma mensagem no WhatsApp.</span>';
-                // Limpar formulário
-                document.getElementById('pacienteNome').value = '';
-                document.getElementById('pacienteTelefone').value = '';
-                document.getElementById('dataAgendamento').value = '';
-                document.getElementById('horarioSelect').innerHTML = '<option value="">Selecione uma data</option>';
-                document.getElementById('horarioSelect').disabled = true;
-                document.getElementById('servicoSelect').selectedIndex = 0;
-                // Atualizar painel admin se estiver logado
-                if(sessionStorage.getItem('loggedClinicId')) renderAdminAgendamentos();
-            } else {
-                document.getElementById('msgPublic').innerHTML = '<span class="text-red-500">Horário não disponível, tente outro.</span>';
-            }
-            setTimeout(() => document.getElementById('msgPublic').innerHTML = '', 4000);
-        });
-    }
-
-    // --- Controle de navegação entre telas ---
-    document.getElementById('showAdminLink')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('publicScreen').classList.remove('active');
-        document.getElementById('adminLoginScreen').classList.add('active');
-    });
-    document.getElementById('backToPublicFromLogin')?.addEventListener('click', () => {
-        document.getElementById('adminLoginScreen').classList.remove('active');
-        document.getElementById('publicScreen').classList.add('active');
-    });
-    document.getElementById('doAdminLogin')?.addEventListener('click', () => {
-        let user = document.getElementById('adminLoginUser').value;
-        let pass = document.getElementById('adminLoginPass').value;
-        if(!user) { alert("Digite um usuário"); return; }
-        // Qualquer senha aceita para demo
-        doLogin(user, pass);
-    });
-    document.getElementById('logoutAdmin')?.addEventListener('click', logout);
-
-    // Iniciar
-    initPublic();
-</script>
 </body>
 </html>
