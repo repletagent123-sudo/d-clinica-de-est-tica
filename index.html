@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DentalFlow - Automatização e Captação para Consultórios</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,9 +16,7 @@
 </head>
 <body class="bg-zinc-950 text-zinc-50 antialiased selection:bg-cyan-500 selection:text-black overflow-x-hidden">
 
-    <!-- SEÇÃO DA LANDING PAGE -->
     <div id="landing-page-view" class="block">
-        <!-- Header / Navbar -->
         <header class="w-full border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md fixed top-0 left-0 z-50">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <div class="flex items-center gap-2 cursor-pointer">
@@ -41,9 +37,8 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
         <section class="pt-40 pb-24 relative overflow-hidden">
-            <div class="absolute top-0 Bash-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-b from-cyan-500/10 to-transparent blur-[120px] pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-b from-cyan-500/10 to-transparent blur-[120px] pointer-events-none"></div>
             <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800/80 mb-8">
                     <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -66,7 +61,6 @@
             </div>
         </section>
 
-        <!-- Recursos -->
         <section id="recursos" class="py-24 border-t border-zinc-900 bg-zinc-900/20">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center max-w-3xl mx-auto mb-16">
@@ -89,7 +83,6 @@
             </div>
         </section>
 
-        <!-- Preços -->
         <section id="precos" class="py-24 border-t border-zinc-900">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
@@ -125,10 +118,8 @@
         </section>
     </div>
 
-    <!-- PAINEL ADMINISTRATIVO ISOLADO (ESTILO SAAS COM SIDEBAR) -->
     <div id="dashboard-view" class="hidden min-h-screen bg-zinc-950 flex">
         
-        <!-- Sidebar de Navegação -->
         <aside class="w-64 border-r border-zinc-900 bg-zinc-950 flex flex-col justify-between fixed h-full left-0 top-0 z-40">
             <div class="p-6">
                 <div class="flex items-center gap-2 mb-8">
@@ -154,11 +145,9 @@
             </div>
         </aside>
 
-        <!-- Área Principal de Conteúdo -->
         <main class="flex-1 pl-64 min-h-screen bg-zinc-950">
             <div class="p-10 max-w-6xl mx-auto">
                 
-                <!-- MÓDULO FINANCEIRO -->
                 <div id="tab-financeiro" class="tab-content active">
                     <div class="flex justify-between items-center mb-8">
                         <div>
@@ -170,7 +159,6 @@
                         </button>
                     </div>
 
-                    <!-- Cards de KPI -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
                         <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/80">
                             <p class="text-xs font-medium text-zinc-500 uppercase">Faturamento Bruto</p>
@@ -186,22 +174,62 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico Visual em Tailwind Puro -->
-                    <div class="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-800/80 mb-8">
-                        <h3 class="text-sm font-semibold text-zinc-300 mb-6">Demonstrativo de Balanço Simplificado (Proporções)</h3>
-                        <div class="space-y-4">
+                    <div class="p-8 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 mb-8 backdrop-blur-md relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 blur-[80px] pointer-events-none rounded-full"></div>
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-8">
                             <div>
-                                <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Faturamento Aplicado</span><span>100%</span></div>
-                                <div class="w-full bg-zinc-900 h-3 rounded-full overflow-hidden"><div class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-full"></div></div>
+                                <h3 class="text-sm font-bold text-zinc-200 tracking-tight flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 00-2-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                                    Métricas de Performance Operacional
+                                </h3>
+                                <p class="text-xs text-zinc-500 mt-0.5">Análise proporcional e integridade fiscal em tempo de execução.</p>
                             </div>
-                            <div>
-                                <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Despesa Operacional com Insumos</span><span id="pct-despesa">21.5%</span></div>
-                                <div class="w-full bg-zinc-900 h-3 rounded-full overflow-hidden"><div id="bar-despesa" class="bg-red-500 h-full transition-all duration-500" style="width: 21.5%;"></div></div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-[11px] font-medium text-zinc-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                                Demonstrativo Realizado
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="text-xs font-medium text-zinc-400 flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span> Faturamento Alocado
+                                    </span>
+                                    <span class="text-[11px] font-bold text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">100%</span>
+                                </div>
+                                <div class="w-full bg-zinc-950 h-3 rounded-full border border-zinc-900 overflow-hidden p-[2px]">
+                                    <div class="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 h-full rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)]"></div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="text-xs font-medium text-zinc-400 flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Índice de Despesa
+                                    </span>
+                                    <span id="pct-despesa" class="text-[11px] font-bold text-red-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">21.5%</span>
+                                </div>
+                                <div class="w-full bg-zinc-950 h-3 rounded-full border border-zinc-900 overflow-hidden p-[2px]">
+                                    <div id="bar-despesa" class="bg-gradient-to-r from-red-600 to-orange-500 h-full rounded-full shadow-[0_0_10px_rgba(239,68,68,0.15)] transition-all duration-500" style="width: 21.5%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-baseline">
+                                    <span class="text-xs font-medium text-zinc-400 flex items-center gap-1.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Margem de Lucro Líquido
+                                    </span>
+                                    <span id="pct-lucro-barra" class="text-[11px] font-bold text-emerald-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">78.5%</span>
+                                </div>
+                                <div class="w-full bg-zinc-950 h-3 rounded-full border border-zinc-900 overflow-hidden p-[2px]">
+                                    <div id="bar-lucro-barra" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full shadow-[0_0_10px_rgba(16,185,129,0.15)] transition-all duration-500" style="width: 78.5%;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tabela Financeira -->
                     <div class="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
@@ -215,14 +243,12 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table-financeiro" class="text-sm divide-y divide-zinc-900">
-                                    <!-- Dinâmico -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- MÓDULO DE AGENDAMENTOS -->
                 <div id="tab-agendamentos" class="tab-content">
                     <div class="flex justify-between items-center mb-8">
                         <div>
@@ -247,14 +273,12 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table-agendamentos" class="text-sm divide-y divide-zinc-900">
-                                    <!-- Dinâmico -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- MÓDULO DE ESTOQUE -->
                 <div id="tab-estoque" class="tab-content">
                     <div class="flex justify-between items-center mb-8">
                         <div>
@@ -279,8 +303,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="table-estoque" class="text-sm divide-y divide-zinc-900">
-                                    <!-- Dinâmico -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
@@ -290,7 +313,6 @@
         </main>
     </div>
 
-    <!-- MODAL UNIVERSAL PARA CADASTRAR/EDITAR DADOS -->
     <div id="form-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-zinc-900 border border-zinc-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
             <h3 id="modal-title" class="text-lg font-bold text-white mb-4">Cadastrar Informação</h3>
@@ -299,8 +321,7 @@
                 <input type="hidden" id="form-id">
                 
                 <div id="modal-inputs" class="space-y-4">
-                    <!-- Gerado dinamicamente via JS conforme o módulo aberto -->
-                </div>
+                    </div>
 
                 <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-800/80">
                     <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-zinc-400 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-xl transition-all">Cancelar</button>
@@ -310,10 +331,8 @@
         </div>
     </div>
 
-    <!-- Botão Fixo do WhatsApp -->
     <a href="https://wa.me/5511953429077?text=Dúvidas%20sobre%20o%20DentalFlow" target="_blank" class="fixed bottom-6 right-6 z-50 p-4 bg-emerald-500 text-white rounded-2xl shadow-xl flex items-center justify-center"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.5-5.734-1.451L0 24zm6.59-4.846c1.657.982 3.411 1.5 5.409 1.5 5.488 0 9.954-4.448 9.957-9.925.002-2.651-1.02-5.143-2.879-7.003-1.858-1.858-4.347-2.88-6.983-2.88-5.49 0-9.956 4.449-9.959 9.927-.001 2.016.528 3.99 1.531 5.739L1.35 21.53l5.297-1.376zM18.14 14.72c-.332-.166-1.965-.97-2.271-1.082-.307-.113-.53-.166-.753.166-.223.332-.864 1.082-1.06 1.306-.196.223-.392.251-.725.085-.332-.166-1.402-.517-2.671-1.649-.988-.881-1.654-1.97-1.848-2.302-.196-.332-.021-.512.145-.678.15-.15.332-.387.5-.58.166-.194.223-.332.332-.553.11-.221.055-.415-.027-.58-.083-.166-.753-1.815-1.03-2.484-.27-.65-.544-.562-.743-.572-.192-.01-.413-.012-.634-.012s-.58.083-.884.415c-.304.332-1.162 1.135-1.162 2.767 0 1.632 1.19 3.207 1.356 3.428.166.221 2.343 3.577 5.676 5.013.792.341 1.41.546 1.893.7.796.253 1.52.217 2.09.132.636-.093 1.965-.803 2.242-1.58.277-.778.277-1.443.194-1.58-.083-.138-.304-.221-.636-.387z"/></svg></a>
 
-    <!-- SISTEMA E LOGICA OPERACIONAL EM JAVASCRIPT -->
     <script>
         // BANCO DE DADOS EM MEMÓRIA (MOCK DATA)
         let db = {
@@ -334,7 +353,6 @@
             ]
         };
 
-        // ALTERNÂNCIA DE TELAS PRINCIPAIS
         function enterDashboard() {
             document.getElementById('landing-page-view').classList.replace('block', 'hidden');
             document.getElementById('dashboard-view').classList.replace('hidden', 'block');
@@ -346,12 +364,10 @@
             document.getElementById('landing-page-view').classList.replace('hidden', 'block');
         }
 
-        // CONTROLADOR DE ABAS (TABS ISOLADAS)
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             
-            // Estilização do menu
             ['financeiro', 'agendamentos', 'estoque'].forEach(t => {
                 const btn = document.getElementById('btn-' + t);
                 if(t === tabName) {
@@ -362,7 +378,6 @@
             });
         }
 
-        // RENDERIZADORES DO BANCO DE DADOS
         function renderAll() {
             renderFinanceiro();
             renderAgendamentos();
@@ -396,10 +411,15 @@
             document.getElementById('txt-despesas').innerText = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('txt-lucro').innerText = `R$ ${lucro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            // Atualiza Gráfico em tempo de execução
-            let pct = faturamento > 0 ? ((despesas / faturamento) * 100).toFixed(1) : 0;
-            document.getElementById('pct-despesa').innerText = pct + '%';
-            document.getElementById('bar-despesa').style.width = pct + '%';
+            // RECONSTRUÇÃO DO GRÁFICO REATIVO (TRIPLO CANAL)
+            let pctDespesa = faturamento > 0 ? ((despesas / faturamento) * 100).toFixed(1) : 0;
+            let pctLucro = faturamento > 0 ? ((lucro / faturamento) * 100).toFixed(1) : 0;
+
+            document.getElementById('pct-despesa').innerText = pctDespesa + '%';
+            document.getElementById('bar-despesa').style.width = pctDespesa + '%';
+
+            document.getElementById('pct-lucro-barra').innerText = pctLucro + '%';
+            document.getElementById('bar-lucro-barra').style.width = pctLucro + '%';
         }
 
         function renderAgendamentos() {
@@ -438,11 +458,10 @@
             });
         }
 
-        // OPERAÇÕES DO MODAL (ADICIONAR / EDITAR)
         function openModal(modulo, id = null) {
             document.getElementById('form-module').value = modulo;
             document.getElementById('form-id').value = id ? id : '';
-            document.getElementById('modal-title').innerText = id ? 'Editar Registro' : 'Adicionar Novo Registro (' + modulo.toUpperCase() + ')';
+            document.getElementById('modal-title').innerText = id ? 'Editar Registro' : 'Adicionar Novo Registro';
             
             const inputsContainer = document.getElementById('modal-inputs');
             inputsContainer.innerHTML = '';
